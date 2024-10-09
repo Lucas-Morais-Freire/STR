@@ -22,8 +22,8 @@ int main() {
         for (i = 0; i < 1387634340; i ++);
     
     gettimeofday(&tempo_final, NULL);
-    tmili = (int) (1000 * (tempo_final.tv_sec - tempo_inicial.tv_sec) + (tempo_final.tv_usec - tempo_inicial.tv_usec) / 1000); // para transformar em milissegundos
-    tmili_final = tmili/1000;
+    tmili = (int) ((tempo_final.tv_sec - tempo_inicial.tv_sec) + (tempo_final.tv_usec - tempo_inicial.tv_usec)); // para transformar em milissegundos
+    tmili_final = tmili;
     
     printf("tempo decorrido: %d milissegundos\n", tmili_final);
    

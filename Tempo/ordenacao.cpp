@@ -19,12 +19,11 @@
 #include  <time.h>   // clock(),time()
 #include <stdio.h>   // printf()
 #include <stdlib.h>  // exit()
-
+#include <sys/time.h>
+#include <fstream>
+#include <iostream>
 
 //Vetores usados pelos métodos de ordenação
-int *vetorQuickSort;
-int *vetorBubbleSort;
-int tamanho;
 
 //Função usada pelo qsort para comparar dois numeros
 int compare_ints( const void* a, const void* b ) {
@@ -53,29 +52,81 @@ void bubbleSort(int *vetor, int tamanho) {
 //Observe que os números são gerados aleatoriamente baseados
 //em uma semente. Se for passado a mesma semente, os 
 //números aleatórios serão os mesmos
-void criarVetor(int tamanhoVetor, int semente){
+void criarVetor(int** vqsort, int** vbsort, int tamanhoVetor, int semente){
 	srand (semente);
-	vetorQuickSort = new int[tamanhoVetor];
-	vetorBubbleSort = new int[tamanhoVetor];
+	(*vqsort) = new int[tamanhoVetor];
+	(*vbsort) = new int[tamanhoVetor];
 	for (int i=0;i<tamanhoVetor;i++){
-		vetorQuickSort[i] =  rand()%100000;
-        vetorBubbleSort[i] = vetorQuickSort[i]; // utilizar os mesmos valores
+		(*vqsort)[i] =  rand()%100000;
+        (*vbsort)[i] = (*vqsort)[i]; // utilizar os mesmos valores
 		//vetorBubbleSort[i] = rand()%100000;
 	}
 }
 
-
+#define N_RUNS 5
+#define N 10
 
 int main ()
 {
 	//Tamanho do vetor
-	int n = 100000;
-	//Criar vetor com elementos aleatorios[0,100000] 
-	criarVetor(n,23);
-	//Ordenar utilizando quickSort
-	qsort (vetorQuickSort, n, sizeof(int), compare_ints);
-	//Ordenar utilizando bubleSort
-	bubbleSort(vetorBubbleSort,n);
+	timeval ti, tf;
+	int* vqsort,* vbsort;
+	int n;
+
+	long qsort_times[N][N_RUNS];
+	long bsort_times[N][N_RUNS];
+
+	for (int j = 0; j < N_RUNS; j++) {
+		n = 250;
+		for (int i = 0; i < N; i++) {
+			std::cout << "com n = " << n << '\n';
+			criarVetor(&vqsort, &vbsort, n, 23);
+			//Ordenar utilizando quickSort
+			gettimeofday(&ti, nullptr);
+			qsort (vqsort, n, sizeof(int), compare_ints);
+			gettimeofday(&tf, nullptr);
+			qsort_times[i][j] = 1000000*(tf.tv_sec - ti.tv_sec) + (tf.tv_usec - ti.tv_usec);
+
+			//Ordenar utilizando bubleSort
+			gettimeofday(&ti, nullptr);
+			bubbleSort(vbsort,n);
+			gettimeofday(&tf, nullptr);
+			bsort_times[i][j] = 1000000*(tf.tv_sec - ti.tv_sec) + (tf.tv_usec - ti.tv_usec);
+
+			delete[] vbsort;
+			delete[] vqsort;
+
+			n <<= 1;
+		}
+	}
+	std::ofstream file("times.csv");
+
+	n = 250;
+	file << "quicksort\n";
+	file << "size,time(us)\n";
+	for (int i = 0; i < N; i++) {
+		double total = 0.0;
+		for (int j = 0; j < N_RUNS; j++) {
+			total += qsort_times[i][j];
+		}
+		file << n << ',' << total / N_RUNS << '\n';
+		n <<= 1;
+	}
+
+	n = 250;
+	file << "\nbubblesort\n";
+	file << "size,time(us)\n";
+	for (int i = 0; i < N; i++) {
+		double total = 0.0;
+		for (int j = 0; j < N_RUNS; j++) {
+			total += bsort_times[i][j];
+		}
+		file << n << ',' << total / N_RUNS << '\n';
+		n <<= 1;
+	}
+
+	file.close();
+
     printf("terminou");
 	exit(0);
 }
