@@ -28,10 +28,6 @@ engine::engine(const int width, const int height, const int aspX, const int aspY
     glfwSetWindowUserPointer(window, this); // embed the address of this object to the window
 
     // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetWindowPos(window, 400, 100);
-
-    glfwSetFramebufferSizeCallback(window, fbSizeChanged); // set up which function to call if window changes
-    glfwSetWindowPosCallback(window, fbPosChanged);
 
     this->width = width;
     this->height = height;
@@ -123,6 +119,8 @@ GLFWwindow *engine::operator()() {
 }
 void engine::mainLoop()
 {
+    glfwSetFramebufferSizeCallback(window, fbSizeChanged); // set up which function to call if window changes
+    glfwSetWindowPosCallback(window, fbPosChanged);
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         if (keyHoldEnable) keyHoldFunc(heldKeys);

@@ -2,16 +2,42 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <engine.hpp>
+#include <shader.hpp>
+#include <circle.hpp>
 
 int main() {
     engine eng(1280, 720);
+    glfwSetWindowPos(eng(),300,100);
     glfwSwapInterval(1);
     std::cout << glGetString(GL_VERSION) << '\n';
 
-    auto render = [&]() {
+    shaderProg mainShader{
+        {"shaders/circle.vert", GL_VERTEX_SHADER},
+        {"shaders/circle.frag", GL_FRAGMENT_SHADER}
+    };
+    mainShader.use();
 
+    circle circle({0.f, 0.f}, 50.0f, {0.f, 0.f, 1.f});
+
+    glm::mat4 modelmat(1.f);
+    GLint modelmat_loc = glGetUniformLocation(mainShader(), "modelmat");
+    glm::mat4 viewmat(1.f);
+    GLint viewmat_loc = glGetUniformLocation(mainShader(), "viewmat");
+    glm::mat4 projmat = glm::ortho(-640.f, 640.f, -360.f, 360.f, 0.f, 1.0f);
+    GLint projmat_loc = glGetUniformLocation(mainShader(), "projmat");
+
+    glUniformMatrix4fv(modelmat_loc, 1, GL_FALSE, glm::value_ptr(modelmat));
+    glUniformMatrix4fv(viewmat_loc, 1, GL_FALSE, glm::value_ptr(viewmat));
+    glUniformMatrix4fv(projmat_loc, 1, GL_FALSE, glm::value_ptr(projmat));
+
+    auto render = [&]() {
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        circle.draw(mainShader);
     };
 
     auto keyHold = [&](const std::list<int>& pressedKeys) {

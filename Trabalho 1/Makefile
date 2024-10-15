@@ -2,8 +2,8 @@ COMP = g++
 FLAGS = -Wall -Wextra -std=c++20 -g #-O3
 
 TARGET = main.exe
-SRCS = main.cpp src/engine.cpp src/shader.cpp C:/Projetos/glad/src/glad.cpp
-INCLUDE_PATHS = include C:/Projetos/glad/include C:/Projetos/glfw/include
+SRCS = main.cpp src/engine.cpp src/shader.cpp src/circle.cpp C:/Projetos/glad/src/glad.cpp 
+INCLUDE_PATHS = include C:/Projetos/glad/include C:/Projetos/glfw/include C:/Projetos/glm-1.0.1
 LIBS_PATHS = C:/Projetos/glfw/build/src
 LIBS = opengl32 glfw3 gdi32
 
@@ -13,8 +13,8 @@ LIBS_FLAGS = $(patsubst %,-l%,$(LIBS))
 OBJS = $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(SRCS)))
 DEPS = $(patsubst %.c,%.d,$(patsubst %.cpp,%.d,$(SRCS)))
 
-# test:
-# 	@echo $(DEPS)
+test:
+	@echo $(DEPS)
 
 all: $(TARGET)
 
@@ -29,5 +29,8 @@ $(TARGET): $(DEPS) $(OBJS)
 %.o: %.cpp
 	$(COMP) $(FLAGS) -c $< -o $@ $(INCLUDE_FLAGS)
 
+run: $(TARGET)
+	.\$(TARGET)
+
 clean:
-	del -f $(subst /,\,$(DEPS) $(TARGET) $(OBJS))
+	del $(subst /,\,$(OBJS) $(TARGET))
