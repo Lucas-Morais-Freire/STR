@@ -23,15 +23,9 @@ int main() {
 
     circle circle({0.f, 0.f}, 50.0f, {0.f, 0.f, 1.f});
 
-    glm::mat4 modelmat(1.f);
-    GLint modelmat_loc = glGetUniformLocation(mainShader(), "modelmat");
-    glm::mat4 viewmat(1.f);
-    GLint viewmat_loc = glGetUniformLocation(mainShader(), "viewmat");
     glm::mat4 projmat = glm::ortho(-640.f, 640.f, -360.f, 360.f, 0.f, 1.0f);
     GLint projmat_loc = glGetUniformLocation(mainShader(), "projmat");
-
-    glUniformMatrix4fv(modelmat_loc, 1, GL_FALSE, glm::value_ptr(modelmat));
-    glUniformMatrix4fv(viewmat_loc, 1, GL_FALSE, glm::value_ptr(viewmat));
+    
     glUniformMatrix4fv(projmat_loc, 1, GL_FALSE, glm::value_ptr(projmat));
 
     auto render = [&]() {
