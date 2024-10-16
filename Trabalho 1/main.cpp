@@ -1,4 +1,5 @@
 #include <iostream>
+#include <format>
 #include <random>
 #include <map>
 #include <sys/time.h>
@@ -197,6 +198,8 @@ int main() {
 	int score = 0;
 	float total = 0;
 	int presses = 0;
+	std::string print1 = "media: 0 ms";
+	std::string print2 = "score: 0/0";
 	auto render = [&]() {
 		if (pressed) {
 			gettimeofday(&finish, nullptr);
@@ -208,8 +211,8 @@ int main() {
 
 			score = hit ? score + 1 : score - 1;
 			total = total + (finish.tv_sec - start.tv_sec)*1000.f + (finish.tv_usec - start.tv_usec)/1000.f;
-			std::cout << "\033[A\33[2K";
-			std::cout << "media: " << total/presses << " ms, score: " << score << '/' << presses << '\n';
+			print1 = std::format("media: {:.2f} ms", total/presses);
+			print2 = std::format("score: {}/{}", score, presses);
 
 			start.tv_sec = finish.tv_sec;
 			start.tv_usec = finish.tv_usec;
@@ -227,6 +230,8 @@ int main() {
 		RenderText(textShader, "vermelho: A", -630.f, -300.f, 1.f, glm::vec3(1.f, 0.f, 0.f), VAO, VBO);
 		RenderText(textShader, "verde: S", -630.f, -330.f, 1.f, glm::vec3(0.f, 1.f, 0.f), VAO, VBO);
 		RenderText(textShader, "azul: D", -630.f, -360.f, 1.f, glm::vec3(0.f, 0.f, 1.f), VAO, VBO);
+		RenderText(textShader, print1, 300, -330, 1.f, glm::vec3(1.f, 1.f, 1.f), VAO, VBO);
+		RenderText(textShader, print2, 300, -300, 1.f, glm::vec3(1.f, 1.f, 1.f), VAO, VBO);
 	};
 
 	auto keyPress = [&](int key) {
