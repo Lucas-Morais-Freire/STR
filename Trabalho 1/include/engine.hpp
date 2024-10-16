@@ -12,6 +12,7 @@ void fbSizeChanged(GLFWwindow* window, int width, int height);
 void fbPosChanged(GLFWwindow* window, int xpos, int ypos);
 void keyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
 void mousePosEvent(GLFWwindow* window, double xpos, double ypos);
+void mouseEvent(GLFWwindow* window, int button, int action, int mods);
 void APIENTRY debugMessage(GLenum source, GLenum type, GLuint id,
                            GLenum severity, GLsizei length,
                            const GLchar* msg, const void* data);
@@ -36,12 +37,16 @@ protected:
     std::function<void(double, double)> mousePosFunc = nullptr;
     bool mousePosEnable = false;
 
+    std::function<void(int)> mousePressFunc = nullptr;
+    bool mousePressEnable = false;
+
     std::function<void()> renderFunc;
 
     friend void fbSizeChanged(GLFWwindow* window, int width, int height);
     friend void fbPosChanged(GLFWwindow* window, int xpos, int ypos);
     friend void keyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
     friend void mousePosEvent(GLFWwindow* window, double xpos, double ypos);
+    friend void mouseEvent(GLFWwindow* window, int button, int action, int mods);
 public:
 
     engine() : engine(1280, 720) {}
@@ -58,6 +63,8 @@ public:
     void setKeyReleaseFuncEnabled(bool enable);
     void setMousePosFunc(const std::function<void(double, double)>& mousePos);
     void setKeyMousePosFuncEnabled(bool enable);
+    void setMousePressFunc(const std::function<void(int)>& mousePress);
+    void setMousePressFuncEnabled(bool enable);
 
     void setWindowShouldClose(bool close) const;
     void setAspectRatio(const int aspX, const int aspY);

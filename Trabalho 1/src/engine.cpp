@@ -2,7 +2,9 @@
 #include <iostream>
 
 engine::engine(const int width, const int height, const int aspX, const int aspY) {
-    glfwInit();
+    if (!glfwInit()) {
+        throw std::runtime_error("Failed to initialize glfw");
+    }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // ogl major ver
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6); // ogl minor ver
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // use core profiler
@@ -60,6 +62,7 @@ void engine::setKeyHoldFuncEnabled(bool enable) {
 void engine::setKeyPressFunc(const std::function<void(int key)> &keyPress) {
     keyPressFunc = keyPress;
     keyPressEnable = true;
+    glfwSetKeyCallback(window, keyEvent);
 }
 
 void engine::setKeyPressFuncEnabled(bool enable) {
@@ -69,6 +72,7 @@ void engine::setKeyPressFuncEnabled(bool enable) {
 void engine::setKeyReleaseFunc(const std::function<void(int key)> &keyRelease) {
     keyReleaseFunc = keyRelease;
     keyReleaseEnable = true;
+    glfwSetKeyCallback(window, keyEvent);
 }
 
 void engine::setKeyReleaseFuncEnabled(bool enable) {
@@ -83,6 +87,18 @@ void engine::setMousePosFunc(const std::function<void(double, double)>& mousePos
 
 void engine::setKeyMousePosFuncEnabled(bool enable) {
     mousePosEnable = enable;
+}
+
+void engine::setMousePressFunc(const std::function<void(int)> &mousePress)
+{
+    mousePressFunc = mousePress;
+    mousePressEnable = true;
+    glfwSetMouseButtonCallback(window, mouseEvent);
+}
+
+void engine::setMousePressFuncEnabled(bool enable)
+{
+    mousePressEnable = enable;
 }
 
 void engine::setWindowShouldClose(bool close) const {
@@ -174,6 +190,13 @@ void keyEvent(GLFWwindow *window, int key, int scancode, int action, int mods) {
 void mousePosEvent(GLFWwindow *window, double xpos, double ypos) {
     engine* this_eng = (engine*)glfwGetWindowUserPointer(window);
     if (this_eng->mousePosEnable) this_eng->mousePosFunc(xpos, ypos);
+}
+
+void mouseEvent(GLFWwindow *window, int button, int action, int mods) {
+    engine* this_eng = (engine*)glfwGetWindowUserPointer(window);
+    if (action == GLFW_PRESS) {
+        if (this_eng->mousePressEnable) this_eng->mousePressFunc(button);
+    }
 }
 
 void APIENTRY debugMessage(GLenum source, GLenum type, GLuint id,
