@@ -1,19 +1,22 @@
 #include <circle.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-circle::circle(glm::vec2 center, GLfloat radius, glm::vec3 color) :
-    _center(center),
+const GLuint circle::_indices[6] = {
+    0, 1, 3, 1, 2, 3
+};
+
+circle::circle(GLfloat center[2], GLfloat radius, const GLfloat (&color)[3]) :
     _radius(radius),
-    _color(color),
     _vertices {
-        center.x - radius, center.y - radius,
-        center.x + radius, center.y - radius,
-        center.x + radius, center.y + radius,
-        center.x - radius, center.y + radius,
-    },
-    _indices {
-        0, 1, 3, 1, 2, 3
+        center[0] - radius, center[1] - radius,
+        center[0] + radius, center[1] - radius,
+        center[0] + radius, center[1] + radius,
+        center[0] - radius, center[1] + radius,
     } {
+    _center[0] = center[0];
+    _center[1] = center[1];
+    _color[0] = color[0]; _color[1] = color[1]; _color[2] = color[2];
+    
     // create buffers/arrays
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -48,9 +51,9 @@ circle::~circle()
 void circle::draw(shaderProg& shader)
 {
     shader.use();
-    glUniform2fv(glGetUniformLocation(shader(), "center"), 1, glm::value_ptr(_center));
+    glUniform2fv(glGetUniformLocation(shader(), "center"), 1, _center);
     glUniform1f(glGetUniformLocation(shader(), "radius"), _radius);
-    glUniform3fv(glGetUniformLocation(shader(), "fColor"), 1, glm::value_ptr(_color));
+    glUniform3fv(glGetUniformLocation(shader(), "fColor"), 1, _color);
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

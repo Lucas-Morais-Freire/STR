@@ -13,8 +13,8 @@ LIBS_FLAGS = $(patsubst %,-l%,$(LIBS))
 OBJS = $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(SRCS)))
 DEPS = $(patsubst %.c,%.d,$(patsubst %.cpp,%.d,$(SRCS)))
 
-test:
-	@echo $(DEPS)
+# test:
+# 	@echo $(DEPS)
 
 all: $(TARGET)
 

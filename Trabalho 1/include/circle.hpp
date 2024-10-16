@@ -13,15 +13,16 @@
 
 class circle {
 private:
-    glm::vec2 _center;
+    GLfloat _center[2];
     GLfloat _radius;
-    glm::vec3 _color;
+    GLfloat _color[3];
     GLfloat _vertices[8];
-    GLuint _indices[6]; 
     GLuint VAO, VBO, EBO;
+    
+    const static GLuint _indices[6];
 public:
 
-    circle(glm::vec2 center = glm::vec2(0, 0), GLfloat radius = 1.f, glm::vec3 color = glm::vec3(0,0,0));
+    circle(GLfloat center[2], GLfloat radius, const GLfloat (&color)[3]);
     ~circle();
 
     void draw(shaderProg& shader);
