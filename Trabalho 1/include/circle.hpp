@@ -22,7 +22,7 @@ private:
     const static GLuint _indices[6];
 public:
 
-    circle(GLfloat center[2], GLfloat radius, const GLfloat (&color)[3]);
+    circle(const GLfloat (&center)[2], GLfloat radius, const GLfloat (&color)[3]);
     ~circle();
 
     void draw(shaderProg& shader);

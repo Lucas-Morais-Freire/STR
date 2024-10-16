@@ -29,6 +29,8 @@ int main() {
 	GLint projmat_loc = glGetUniformLocation(mainShader(), "projmat");
 	glUniformMatrix4fv(projmat_loc, 1, GL_FALSE, glm::value_ptr(projmat));
 
+	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
+
 	const GLfloat colors[4][3] = {
 		{1.f, 0.f, 0.f},
 		{0.f, 1.f, 0.f},
@@ -43,10 +45,13 @@ int main() {
 	unsigned char color_index = generate_random_num(0, 3);
 	circle* circ = new circle(center, 50.f, colors[color_index]);
 
+	circle background({0.f, 0.f}, 2000.f, {0.f, 0.f, 0.f});
+
 	timeval start, finish;
 	gettimeofday(&start, nullptr);
 	auto render = [&]() {
 		glClear(GL_COLOR_BUFFER_BIT);
+		background.draw(mainShader);
 
 		gettimeofday(&finish, nullptr);
 

@@ -5,7 +5,7 @@ const GLuint circle::_indices[6] = {
     0, 1, 3, 1, 2, 3
 };
 
-circle::circle(GLfloat center[2], GLfloat radius, const GLfloat (&color)[3]) :
+circle::circle(const GLfloat (&center)[2], GLfloat radius, const GLfloat (&color)[3]) :
     _radius(radius),
     _vertices {
         center[0] - radius, center[1] - radius,
