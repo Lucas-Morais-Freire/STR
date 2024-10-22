@@ -77,7 +77,7 @@ int main ()
 	long bsort_times[N][N_RUNS];
 
 	for (int j = 0; j < N_RUNS; j++) {
-		n = 250;
+		n = 125;
 		for (int i = 0; i < N; i++) {
 			std::cout << "com n = " << n << '\n';
 			criarVetor(&vqsort, &vbsort, n, 23);
@@ -101,7 +101,7 @@ int main ()
 	}
 	std::ofstream file("times.csv");
 
-	n = 250;
+	n = 125;
 	file << "quicksort\n";
 	file << "size,time(us)\n";
 	for (int i = 0; i < N; i++) {
@@ -113,7 +113,7 @@ int main ()
 		n <<= 1;
 	}
 
-	n = 250;
+	n = 125;
 	file << "\nbubblesort\n";
 	file << "size,time(us)\n";
 	for (int i = 0; i < N; i++) {
@@ -128,6 +128,8 @@ int main ()
 	file.close();
 
     printf("terminou");
+
+	system("python ./plot_sorts.py");
 	exit(0);
 }
 

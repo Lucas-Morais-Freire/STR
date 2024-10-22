@@ -200,38 +200,52 @@ int main() {
 	int presses = 0;
 	std::string print1 = "media: 0 ms";
 	std::string print2 = "score: 0/0";
+	bool waiting = false;
+	double wst;
+	double wt;
 	auto render = [&]() {
-		if (pressed) {
-			gettimeofday(&finish, nullptr);
+		if (!waiting) {
+			if (pressed) {
+				gettimeofday(&finish, nullptr);
 
-			center[0] = generate_random_num(-640, 640); center[1] = generate_random_num(-360, 360);
-			color_index = generate_random_num(0, 3);
-			delete circ;
-			circ = new circle(center, 50.f, colors[color_index]);
+				center[0] = generate_random_num(-640, 640); center[1] = generate_random_num(-360, 360);
+				color_index = generate_random_num(0, 3);
+				delete circ;
+				circ = new circle(center, 50.f, colors[color_index]);
 
-			score = hit ? score + 1 : score - 1;
-			total = total + (finish.tv_sec - start.tv_sec)*1000.f + (finish.tv_usec - start.tv_usec)/1000.f;
-			print1 = std::format("media: {:.2f} ms", total/presses);
-			print2 = std::format("score: {}/{}", score, presses);
+				score = hit ? score + 1 : score - 1;
+				total = total + (finish.tv_sec - start.tv_sec)*1000.f + (finish.tv_usec - start.tv_usec)/1000.f;
+				print1 = std::format("media: {:.2f} ms", total/presses);
+				print2 = std::format("score: {}/{}", score, presses);
 
-			start.tv_sec = finish.tv_sec;
-			start.tv_usec = finish.tv_usec;
+				pressed = false;
+				hit = false;
 
-			pressed = false;
-			hit = false;
+				waiting = true;
+
+				wst = glfwGetTime();
+				wt = generate_random_num(0,5000)/1000.f;
+			}
 		}
 
 		glClear(GL_COLOR_BUFFER_BIT); // limpar a tela
 		background.draw(mainShader);  // desenhar o background
 
 
-		circ->draw(mainShader);
+		if (!waiting) circ->draw(mainShader);
 		RenderText(textShader, "amarelo: W", -630.f, -270.f, 1.f, glm::vec3(1.f, 1.f, 0.f), VAO, VBO);
 		RenderText(textShader, "vermelho: A", -630.f, -300.f, 1.f, glm::vec3(1.f, 0.f, 0.f), VAO, VBO);
 		RenderText(textShader, "verde: S", -630.f, -330.f, 1.f, glm::vec3(0.f, 1.f, 0.f), VAO, VBO);
 		RenderText(textShader, "azul: D", -630.f, -360.f, 1.f, glm::vec3(0.f, 0.f, 1.f), VAO, VBO);
 		RenderText(textShader, print1, 300, -330, 1.f, glm::vec3(1.f, 1.f, 1.f), VAO, VBO);
 		RenderText(textShader, print2, 300, -300, 1.f, glm::vec3(1.f, 1.f, 1.f), VAO, VBO);
+
+		if (waiting) {
+			if (glfwGetTime() - wst >= wt) {
+				waiting = false;
+				gettimeofday(&start, nullptr);
+			}
+		}
 	};
 
 	auto keyPress = [&](int key) {
@@ -240,24 +254,32 @@ int main() {
 			eng.setWindowShouldClose(true);
 			break;
 		case GLFW_KEY_W:
-			pressed = true;
-			presses++;	
-			if (color_index == 3) hit = true;
+			if (!waiting) {
+				pressed = true;
+				presses++;	
+				if (color_index == 3) hit = true;
+			}
 			break;
 		case GLFW_KEY_A:
-			pressed = true;
-			presses++;
-			if (color_index == 0) hit = true;
+			if (!waiting) {
+				pressed = true;
+				presses++;
+				if (color_index == 0) hit = true;
+			}
 			break;
 		case GLFW_KEY_S:
-			pressed = true;
-			presses++;
-			if (color_index == 1) hit = true;
+			if (!waiting) {
+				pressed = true;
+				presses++;
+				if (color_index == 1) hit = true;
+			}
 			break;
 		case GLFW_KEY_D:
-			pressed = true;
-			presses++;
-			if (color_index == 2) hit = true;
+			if (!waiting) {
+				pressed = true;
+				presses++;
+				if (color_index == 2) hit = true;
+			}
 		}
 	};
 
