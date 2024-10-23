@@ -22,8 +22,10 @@ int main( )
     struct sockaddr_un address;
     int result;
     char ch = 'A';
-    
+
     sockfd  = socket(AF_UNIX, SOCK_STREAM,0);  // criacao do socket
+
+    
     
     address.sun_family = AF_UNIX;
     strcpy (address.sun_path, "server_socket");

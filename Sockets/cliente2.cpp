@@ -27,7 +27,7 @@ int main( )
     sockfd  = socket(AF_INET, SOCK_STREAM,0);  // criacao do socket
     
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = inet_addr("127.0.0.1");
+    address.sin_addr.s_addr = inet_addr("172.");
     address.sin_port = 9734;
     //strcpy (address.sun_path, "server_socket");
     len = sizeof(address);

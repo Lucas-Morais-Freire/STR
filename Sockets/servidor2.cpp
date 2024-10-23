@@ -26,7 +26,7 @@ int main( )
     server_sockfd = socket(AF_INET, SOCK_STREAM, 0);  // cria um novo socket
     
     server_address.sin_family = AF_INET;
-    server_address.sin_addr.s_addr = inet_addr("127.0.0.1");
+    server_address.sin_addr.s_addr = inet_addr("177.20.136.254");
     server_address.sin_port = 9734;
     
     //strcpy(server_address.sun_path, "server_socket");
