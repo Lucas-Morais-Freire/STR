@@ -13,7 +13,9 @@ int main(int argc, char** argv) {
 	}
 
 	// pegar a quantidade de bytes a ser enviada
-	const int num_bytes = strtoul(argv[1], nullptr, 10);
+	const int num_bytes = strtol(argv[1], nullptr, 10);
+
+	std::cout << num_bytes << '\n';
 
 	if (num_bytes <= 0) {
 		std::cout << "A quantidade de bytes a ser enviada deve ser um numero positivo\n";
@@ -38,7 +40,7 @@ int main(int argc, char** argv) {
 	#endif
 
 	// criar socket para fazer loopback
-	int sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sockfd == -1) {
 		std::cout << "Falha na criação do socket.\n";
 		return -1;
@@ -46,7 +48,7 @@ int main(int argc, char** argv) {
 
 	sockaddr_in s_addr;
 	s_addr.sin_family = AF_INET;
-	s_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	s_addr.sin_addr.s_addr = inet_addr("172.0.0.1");
 	s_addr.sin_port = htons(9734);
 
 	socklen_t s_addr_len;
@@ -55,44 +57,45 @@ int main(int argc, char** argv) {
 	timeval start, finish;
 	gettimeofday(&start, nullptr);
 	sendto(sockfd, message, sizeof(message), 0, (sockaddr*)&s_addr, sizeof(s_addr));
-	recvfrom(sockfd, message, sizeof(message), 0, (sockaddr*)&s_addr, &s_addr_len);
+	ssize_t size = recvfrom(sockfd, message, sizeof(message), 0, (sockaddr*)&s_addr, &s_addr_len);
 	gettimeofday(&finish, nullptr);
+	std::cout << size << '\n';
 
 	// calculat o tempo de loopback	
-	double loopback_time = (finish.tv_sec - start.tv_sec)*1000.0 + (finish.tv_usec - start.tv_usec)/1000.0;
+	double loopback_time = /*(finish.tv_sec - start.tv_sec)*1000.0 + */ (finish.tv_usec - start.tv_usec)/1000.0;
 
 	fmt::print("Tempo de loopback: {:.4f} ms.\n", loopback_time);
 	
 	// fechar a conexao
 	close(sockfd);
 	
-	// abrir uma nova conexao
-	sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	if (sockfd == -1) {
-		std::cout << "Falha na criação do socket.\n";
-		return -1;
-	}
+	// // abrir uma nova conexao
+	// sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	// if (sockfd == -1) {
+	// 	std::cout << "Falha na criação do socket.\n";
+	// 	return -1;
+	// }
 
-	s_addr.sin_family = AF_INET;
-	s_addr.sin_addr.s_addr = inet_addr(argv[2]);
-	s_addr.sin_port = htons(9734);
+	// s_addr.sin_family = AF_INET;
+	// s_addr.sin_addr.s_addr = inet_addr(argv[2]);
+	// s_addr.sin_port = htons(9734);
 
-	// fazer envio e recebimento da mensagem para a outra maquina
-	gettimeofday(&start, nullptr);
-	sendto(sockfd, message, sizeof(message), 0, (sockaddr*)&s_addr, sizeof(s_addr));
-	recvfrom(sockfd, message, sizeof(message), 0, (sockaddr*)&s_addr, &s_addr_len);
-	gettimeofday(&finish, nullptr);
+	// // fazer envio e recebimento da mensagem para a outra maquina
+	// gettimeofday(&start, nullptr);
+	// sendto(sockfd, message, sizeof(message), 0, (sockaddr*)&s_addr, sizeof(s_addr));
+	// recvfrom(sockfd, message, sizeof(message), 0, (sockaddr*)&s_addr, &s_addr_len);
+	// gettimeofday(&finish, nullptr);
 
-	// calcular o tempo total	
-	double total_time = (finish.tv_sec - start.tv_sec)*1000.0 + (finish.tv_usec - start.tv_usec)/1000.0;
+	// // calcular o tempo total	
+	// double total_time = (finish.tv_sec - start.tv_sec)*1000.0 + (finish.tv_usec - start.tv_usec)/1000.0;
 
-	fmt::print("Tempo de total: {:.4f} ms.\n", total_time);
+	// fmt::print("Tempo de total: {:.4f} ms.\n", total_time);
 	
-	// fechar a conexao
-	close(sockfd);
+	// // fechar a conexao
+	// close(sockfd);
 	
-	// calcular o tempo de rede
-	fmt::print("Tempo de rede: {:.4f} ms\n", total_time - 2*loopback_time);
+	// // calcular o tempo de rede
+	// fmt::print("Tempo de rede: {:.4f} ms\n", total_time - 2*loopback_time);
 
 	return 0;
 }

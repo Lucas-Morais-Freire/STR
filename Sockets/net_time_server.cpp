@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
 	unsigned char message[65507];
     
     //unlink("server_socket");  // remocao de socket antigo
-    s_sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);  // cria um novo socket
+    s_sockfd = socket(AF_INET, SOCK_DGRAM, 0);  // cria um novo socket
     
     s_addr.sin_family = AF_INET;
     //s_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
@@ -39,8 +39,9 @@ int main(int argc, char** argv) {
     
     while(true) {
         std::cout << "Servidor escutando ...\n";
-        size_t size = recvfrom(s_sockfd, message, sizeof(message), 0, (sockaddr*)&c_addr, &c_len);
+        ssize_t size = recvfrom(s_sockfd, message, sizeof(message), 0, (sockaddr*)&c_addr, &c_len);
         sendto(s_sockfd, message, size, 0, (sockaddr*)&c_addr, c_len);
+        std::cout << size << '\n';
     }
 
     close(s_sockfd);
