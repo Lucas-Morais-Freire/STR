@@ -8,7 +8,7 @@
 
 #include <signal.h> // definição dos sinais de interrupções
 #include <stdio.h>
-#include <unistd.h>
+// #include <unistd.h>
 #include <stdlib.h> // system()
 
 
