@@ -1,16 +1,16 @@
 COMP = g++
 TARGET = main
-SRCS = src/main.cpp
+SRCS = src/main.cpp src/window.cpp
 FLAGS = -Wall -Wextra -g # -O3
-INCLUDE_PATHS =
+INCLUDE_PATHS = include
 LIB_PATHS =
 LIBS =
 
 OBJS = $(patsubst %.cpp,%.o,$(SRCS))
 DEPS = $(patsubst %.cpp,%.d,$(SRCS))
-INCLUDE_FLAGS = $(patsubst %,-I%,$(INCLUDE_PATHS)) `pkg-config --cflags gtk4`
+INCLUDE_FLAGS = $(patsubst %,-I%,$(INCLUDE_PATHS)) `pkg-config --cflags gtkmm-4.0`
 LIB_PATH_FLAGS =
-LIB_FLAGS = $(patsubst %,-l%,$(LIBS)) `pkg-config --libs gtk4`
+LIB_FLAGS = $(patsubst %,-l%,$(LIBS)) `pkg-config --libs gtkmm-4.0`
 
 .PHONY: all run clean
 
