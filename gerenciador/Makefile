@@ -1,6 +1,6 @@
 COMP = g++
 TARGET = main
-SRCS = src/main.cpp src/window.cpp
+SRCS = src/main.cpp src/window.cpp src/proc_list_conf.cpp src/sections_conf.cpp src/bottom_conf.cpp src/top_conf.cpp
 FLAGS = -Wall -Wextra -g # -O3
 INCLUDE_PATHS = include
 LIB_PATHS =

@@ -1,4 +1,4 @@
-//3rd-party
+// 3rd-party
 #include <gtkmm/application.h>
 
 // my headers
