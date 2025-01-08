@@ -5,7 +5,11 @@
 
 namespace utils {
 
-bool is_uint(const std::string& str) {
+inline bool is_uint(const std::string& str) {
+    if (str.size() == 0) {
+        return false;
+    }
+
     for (size_t i = 0; i < str.size(); i++) {
         if (str[i] < '0' || str[i] > '9') {
             return false;

@@ -3,12 +3,14 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <chrono>
 
 // my headers
 #include <proc_list_conf.hpp>
 #include <utils.hpp>
+#include <window.hpp>
 
-proc_list_conf::proc_list_conf(Gtk::TreeView& proc_list) : proc_list(proc_list) {
+proc_list_conf::proc_list_conf(Gtk::TreeView& proc_list) : proc_list{proc_list} {
     list_store = Gtk::ListStore::create(columns);
     proc_list.set_model(list_store);
     proc_list.set_expand();
@@ -78,6 +80,13 @@ namespace fs = std::filesystem;
 void proc_list_conf::update_list()
 {
     static const long clock_ticks = sysconf(_SC_CLK_TCK);
+    static double prev_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()/1000.0 - 1;
+    double curr_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()/1000.0;
+    double elapsed = curr_time - prev_time;
+    prev_time = curr_time;
+    std::cout << elapsed << '\n';
+    static bool first = true;
+
     // clear the list
     list_store->clear();
 
@@ -121,7 +130,7 @@ void proc_list_conf::update_list()
             }
 
             // find difference between the current times and last times.
-            row[columns.usage] = 100.0*(utime + stime - prev_times[pid])/static_cast<double>(clock_ticks);
+            row[columns.usage] = 100.0*(utime + stime - prev_times[pid])/(clock_ticks*elapsed);
             // register current time
             prev_times[pid] = utime + stime;
             file.close();
@@ -136,11 +145,23 @@ void proc_list_conf::update_list()
             // get Name, PPid and State
             std::stringstream stream;
             std::string line;
+            bool to_cont = false;
             while(std::getline(file, line)) {
                 if (line.find("Name") == 0) {
                     stream.str(line);
                     stream.clear();
                     stream >> val >> val;
+                    if (!first) {
+                        Gtk::Widget* wid = proc_list.get_parent()->get_parent()->get_parent();
+                        std::cout << wid->get_name() << '\n';
+                        window* w = static_cast<window*>(proc_list.get_parent()->get_parent()->get_parent());
+                        std::string flt_text = w->sections_manager.bottom_manager.commands_manager.get_flt_text();
+                        if(val.find(flt_text) == std::string::npos) {
+                            list_store->erase(std::prev(list_store->children().end()));
+                            to_cont = true;
+                            break;
+                        }
+                    }
                     row[columns.name] = val;
                 } else if (line.find("State") == 0) {
                     stream.str(line);
@@ -154,6 +175,10 @@ void proc_list_conf::update_list()
                     row[columns.ppid] = std::stoul(val);
                     break;
                 }
+            }
+
+            if (to_cont) {
+                continue;
             }
 
 
@@ -171,4 +196,6 @@ void proc_list_conf::update_list()
             file.close();
         }
     }
+
+    first = false;
 }

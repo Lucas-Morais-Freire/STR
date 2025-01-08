@@ -10,10 +10,10 @@
 
 class window : public Gtk::Window {
     Gtk::Box sections;
-    sections_conf sections_manager;
 
     bool on_timeout();
 public:
+    sections_conf sections_manager;
     window();
 };
 

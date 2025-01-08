@@ -6,7 +6,7 @@ bottom_conf::bottom_conf(Gtk::Box& box) :
     commands_manager{commands},
     cpu_manager{cpu}
 {
-    box.set_expand();
+    box.set_expand(false);
     box.append(commands);
     box.append(cpu);
 }
