@@ -9,11 +9,12 @@
 #include <sections_conf.hpp>
 
 class window : public Gtk::Window {
-public:
-    window();
-protected:
     Gtk::Box sections;
     sections_conf sections_manager;
+
+    bool on_timeout();
+public:
+    window();
 };
 
 #endif

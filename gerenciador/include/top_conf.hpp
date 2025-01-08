@@ -10,8 +10,8 @@
 
 class top_conf {
     Gtk::TreeView proc_list;
-    proc_list_conf proc_list_manager;
 public:
+    proc_list_conf proc_list_manager;
     top_conf(Gtk::ScrolledWindow& scrolled_window);
 };
 

@@ -11,11 +11,11 @@
 
 class sections_conf {
     Gtk::ScrolledWindow top;
-    top_conf top_manager;
-
-    Gtk::Frame bottom;
-    bottom_conf bottom_manager;
+    Gtk::Box bottom;
+    
 public:
+    top_conf top_manager;
+    bottom_conf bottom_manager;
     sections_conf(Gtk::Box& box);
 };
 
