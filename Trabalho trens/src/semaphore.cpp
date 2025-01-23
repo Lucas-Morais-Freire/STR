@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include <semaphore.hpp>
 
 semaphore::semaphore(int resrc_cnt) : resrc_cnt(resrc_cnt)

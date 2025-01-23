@@ -13,7 +13,7 @@ window::window() :
     set_title("Trens");
     set_child(sections);
 
-    train_panel* trains = Gtk::make_managed<train_panel>();
+    train_panel* trains = Gtk::make_managed<train_panel>(17000);
     sliders* velocities = Gtk::make_managed<sliders>(Gtk::Orientation::HORIZONTAL);
 
     sections.set_expand();
